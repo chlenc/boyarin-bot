@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "boyarin-bot",
+  "private_key_id": "046f0b98218f26b89cc7175c5f822c04e7431a11",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCvZsihyBvDdRoi\ngzIvgoIJQ03Aii/RA+OnJH8F79MJi5bAF5UXsjNiPGakO3XEPxKsAc5xRl3TF1QS\nsmbo+JQtTyafw4Ow2xcLukxb2o2fxSDQibd+iY7X5UxFckzUXmgXfX2X1jktoxoT\n5N4sI7DlfWI+EIeB1tcGYlW/n15xdncUNmca+AM+8fws6cYUYxtPfYfrpWvusvt5\nn7b9fhOnYetq/Q86Zi6HGDagLukyP7hFMP7QfbES+dPtdL+NQvndIvPK708bSspX\nCzxYSOy/HX4cbE11/pFgEQt8G4tYptMdoX1mZuEMS+vexWRX7WO58nmwswDZYvEe\nC2sbp90xAgMBAAECggEABL8WgONAK2qVhmzQBzoEFbxVpAHRSq83t5KMzJQ0HPsN\n0qeotrtmpCWaiPPyIJlXgoz/dpsBp7hRmPptKhLXo/9ongmS8cPx/xTKOMZEpMJ3\nZtFCjwjpqG+5lUZYgXrcXKizj6VB8ZlV7QckLc6u8dIyE1ghlJrD1utDDa8M5cDU\nPqC/eA1k4sFT9uouEinTeTBhecHeWQD5j7ORnUOyjDB8lZ3oBIGuLAV3Y0TI6DQw\nsvBlVAHnG5FdBttK5saDTE8lFPTXB0DA0lwLMMeeB/cZZak9i9KUYm33rn10ihYi\nZNUJLuVYMItctNm+dFArcbnnL4XJNOVkR02bp2pp6QKBgQDW1nYbMNo9P9Zq3nK5\nZsHLUpynRHZ9N02yIMUt6ZJX3PKzLi1heiE3vXHMuZvxko7xTYvvlXts3hIe6+iZ\nCKvbYaK1wchHrSapmzBH79au4ZqfdOnNk0fX4DoJ3kKnMYsB6G3flKYodfO4QFim\nJCbV+j/anRhYGvTtTNv7PzofaQKBgQDRAgVnCggU5hL3Dohr+nUmxgQhJuJQseA0\nKxHWG2NZaHOSIQl+7xCIbS97VtYEUoDDuZD33BIokVeEYE9JlE6MVDWu0CzfFTRZ\nvG8fnk+QjFx8fo3wgx4MwiLh9jfep8jGuquHEeUJdrrzDq7Dc2X4UA74cL6Zdut6\nhgNTcdDeiQKBgQCQ8sdi1xYXxw9qsUUkM+FCxi0tabKsDvkb2qJOtM1o/Ii/PcOe\nheENk4LJRt2hImnRAqoMboWE0VvWgwI+5ivVa011ZhYzze5M9oifsIDfIxXIyf/J\nFLqfOwjNiajc1z9bfS9MbyWgHNzgDoIBLlkJe7tDS0SWhTGFPZsaK/GSKQKBgQCE\nCz7WhiPs8B3zL59IeIci498gAqzgRkBbNQqjtdHiXncFTxHsu6Q6TKC+z3GOcYEg\nJlBMByEBuDEOVLpCxguJ5Hm145c1qPPV7ZJW63Fg5QxZKqsJ1AxcCxp2n1NUu7PA\nuZY8UzXb8MLTY+dNW86EPi/3DWOdGOBUG+5l/XXz4QKBgQCKEvbEf5i2U8wZtk1y\nh+Qe7x6y2nbrTag9h5boXfJ5DFAbM5j3cQpe8y+zSTWFc9ToYqcg8bj7S/5iaHvf\nNZJ7WGkA7M4xfx41OiP/Dt+Y3bJaVrzlvjaEfOq6lmuX2CLnWiIOLrhnFQ4Bzm3L\nEWwQUTdL0nOpDNwkJF9UPUAihg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "boyarin-bot@boyarin-bot.iam.gserviceaccount.com",
+  "client_id": "103455612865199238907",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/boyarin-bot%40boyarin-bot.iam.gserviceaccount.com"
+}
