@@ -464,6 +464,6 @@ bot.onText(/\/help/, msg => {
 })
 
 bot.onText(/\/about/, msg => {
-    bot.sendMessage(msg.chat.id,'Этот бот разработан компанией helpexcel в 2018 году. \nhttp://helpexcel.pro/', homeKey)
+    bot.sendMessage(msg.chat.id, 'Этот бот разработан компанией helpexcel в 2018 году.\n\nРазработчик: +79151272664 (Алексей)'+
+    '\n\nБот-помошник: @helpexcel_bot \n\nСайт: http://helpexcel.pro/', homeKey)
 })
-
