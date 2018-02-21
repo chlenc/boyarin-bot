@@ -2,6 +2,68 @@
 
 module.exports = {
 
+    choice_month_key(date){
+        return {
+            reply_markup: {
+                inline_keyboard: [
+                    [
+                        {
+                            text: ('0' + date.getDate()).slice(-2) + '.' + ('0' + (date.getMonth() + 1)).slice(-2) + '.' + date.getFullYear(),
+                            callback_data: 'd&&'+ date.getFullYear()+ '-' +('0' + (date.getMonth() + 1)).slice(-2)+ '-' + ('0' + date.getDate()).slice(-2)
+                        },
+                        {
+                            text: ('0' + (date.getDate()+1)).slice(-2) + '.' + ('0' + (date.getMonth() + 1)).slice(-2) + '.' + date.getFullYear(),
+                            callback_data: 'd&&'+ date.getFullYear()+ '-' +('0' + (date.getMonth() + 1)).slice(-2)+ '-' + ('0' + (date.getDate()+1)).slice(-2)
+                        },
+                        {
+                            text: ('0' + (date.getDate()+2)).slice(-2) + '.' + ('0' + (date.getMonth() + 1)).slice(-2) + '.' + date.getFullYear(),
+                            callback_data: 'd&&'+ date.getFullYear()+ '-' +('0' + (date.getMonth() + 1)).slice(-2)+ '-' + ('0' + (date.getDate()+2)).slice(-2)
+                        }
+                    ],
+                    [
+                        {
+                            text: ('0' + (date.getDate()+3)).slice(-2) + '.' + ('0' + (date.getMonth() + 1)).slice(-2) + '.' + date.getFullYear(),
+                            callback_data: 'd&&'+ date.getFullYear()+ '-' +('0' + (date.getMonth() + 1)).slice(-2)+ '-' + ('0' + (date.getDate()+3)).slice(-2)
+                        },
+                        {
+                            text: ('0' + (date.getDate()+4)).slice(-2) + '.' + ('0' + (date.getMonth() + 1)).slice(-2) + '.' + date.getFullYear(),
+                            callback_data: 'd&&'+ date.getFullYear()+ '-' +('0' + (date.getMonth() + 1)).slice(-2)+ '-' + ('0' + (date.getDate()+4)).slice(-2)
+                        },
+                        {
+                            text: ('0' + (date.getDate()+5)).slice(-2) + '.' + ('0' + (date.getMonth() + 1)).slice(-2) + '.' + date.getFullYear(),
+                            callback_data: 'd&&'+ date.getFullYear()+ '-' +('0' + (date.getMonth() + 1)).slice(-2)+ '-' + ('0' + (date.getDate()+5)).slice(-2)
+                        }
+                    ],
+                    [
+                        {
+                            text: ('0' + (date.getDate()+6)).slice(-2) + '.' + ('0' + (date.getMonth() + 1)).slice(-2) + '.' + date.getFullYear(),
+                            callback_data: 'd&&'+ date.getFullYear()+ '-' +('0' + (date.getMonth() + 1)).slice(-2)+ '-' + ('0' + (date.getDate()+6)).slice(-2)
+                        },
+                        {
+                            text: ('0' + (date.getDate()+7)).slice(-2) + '.' + ('0' + (date.getMonth() + 1)).slice(-2) + '.' + date.getFullYear(),
+                            callback_data: 'd&&'+ date.getFullYear()+ '-' +('0' + (date.getMonth() + 1)).slice(-2)+ '-' + ('0' + (date.getDate()+7)).slice(-2)
+                        },
+                        {
+                            text: ('0' + (date.getDate()+8)).slice(-2) + '.' + ('0' + (date.getMonth() + 1)).slice(-2) + '.' + date.getFullYear(),
+                            callback_data: 'd&&'+ date.getFullYear()+ '-' +('0' + (date.getMonth() + 1)).slice(-2)+ '-' + ('0' + (date.getDate()+8)).slice(-2)
+                        }
+                    ],
+                    [
+                        {
+                            text: 'Заказ звонка',
+                            callback_data: 'request_a_call'
+                        },
+                        {
+                            text: 'Назад',
+                            callback_data: 'back_to_write_key'
+                        }
+                    ]
+
+                ]
+            }
+        }
+    },
+
     goodDate(num){
         var date = new Date();
         if(num == undefined)

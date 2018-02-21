@@ -2,6 +2,7 @@ const TelegramBot = require("node-telegram-bot-api");
 const helpers = require('./helpers');
 const TOKEN = '528549200:AAE4uCDX6fo1y7pztwfoOVqemNWz5uZyRuI';
 const firebase = require("firebase");
+const crm = require('./crm');
 
 //https://www.youtube.com/watch?v=G_FlX41qADE
 
@@ -43,84 +44,23 @@ const writeKey = {
                 request_contact: true
             }, '🔙 Назад' ]
         ],
-        one_time_keyboard: true
+        // one_time_keyboard: true
     }
 };
-const choice_of_the_month_key = {
-        reply_markup: {
-                inline_keyboard: [
-                    [
-                        {
-                            text: helpers.goodDate(),
-                            callback_data: 'choice_of_the_month_0'
-                        },
-                        {
-                            text: helpers.goodDate(1),
-                            callback_data: 'choice_of_the_month_1'
-                        },
-                        {
-                            text: helpers.goodDate(2),
-                            callback_data: 'choice_of_the_month_2'
-                        }
-                    ],
-                    [
-                        {
-                            text: helpers.goodDate(3),
-                            callback_data: 'choice_of_the_month_3'
-                        },
-                        {
-                            text: helpers.goodDate(4),
-                            callback_data: 'choice_of_the_month_4'
-                        },
-                        {
-                            text: helpers.goodDate(5),
-                            callback_data: 'choice_of_the_month_5'
-                        }
-                    ],
-                    [
-                        {
-                            text: helpers.goodDate(6),
-                            callback_data: 'choice_of_the_month_6'
-                        },
-                        {
-                            text: helpers.goodDate(7),
-                            callback_data: 'choice_of_the_month_7'
-                        },
-                        {
-                            text: helpers.goodDate(8),
-                            callback_data: 'choice_of_the_month_8'
-                        }
-                    ],
-                    [
-                        {
-                            text: 'Заказ звонка',
-                            callback_data: 'request_a_call'
-                        },
-                        {
-                            text: 'Назад',
-                            callback_data: 'back_to_write_key'
-                        }
-                    ]
-
-                ]
-            }
-        }
-
-// bot.onText(/\/help/,msg => {
-//
-// })
 
 bot.on('message', msg => {
-    // console.log(msg)
+    console.log(msg)
     const chatId = msg.chat.id;
 
     if(msg.contact){
-        // firebase.database().ref('calls').push(msg.contact);
-        firebase.database().ref('queue/'+msg.chat.id).update({
-            name: msg.chat.first_name + ' ' +msg.chat.last_name,
-            // username: msg.chat.username,
-            phone: msg.contact.phone_number
-        })
+        var date = new Date()
+        var username = msg.chat.username;
+        if (username == undefined)
+            username = '';
+        else{username='@'+username;}
+        bot.sendMessage(-214510409,"Заявка на звонок: \n"+date.getHours()+':'+date.getMinutes()+', '+('0' + date.getDate()).slice(-2) + '.' +
+            ('0' + (date.getMonth() + 1)).slice(-2) + '.' + date.getFullYear()+
+        '\n'+msg.chat.first_name+'\n'+msg.contact.phone_number+'\n'+username,{})
         bot.sendMessage(msg.chat.id,'Вам перезвонят ✅');
         setTimeout(() => {
             bot.sendMessage(chatId, 'Выберите действие 🤔', homeKey)
@@ -149,147 +89,85 @@ bot.on('message', msg => {
         setTimeout(() => {
             bot.sendMessage(chatId, 'Выберите действие 🤔', homeKey)
          },500)
-    }else if(msg.text == '📝 Запись') {
+    }
+    else if(msg.text == '📝 Запись') {
         bot.sendMessage(chatId, 'Вы можете записаться на конкретную дату или выбрать мастера и записаться в часы его работы', writeKey)
-    }else if(msg.text == '🔙 Назад' ) {
+    }
+    else if(msg.text == '🔙 Назад' ) {
         bot.sendMessage(chatId, 'Выберите действие 🤔', homeKey)
     }
     else if(msg.text == '📅 Выбор даты' ) {
-        bot.sendMessage(chatId, 'Выберите дату: ', choice_of_the_month_key)
+        bot.sendMessage(chatId, 'Выберите дату: ', helpers.choice_month_key(new Date()))
     }
     else if(msg.text == '✂️ Выбор мастера' ) {
-        var allMasters  = [];
-        firebase.database().ref('schedule/').on("value", function(snapshot) {
-            var values = snapshot.val();
-            var temp;
-            // console.log(values)
-            var weekDaysArray = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
-            for(var i = 0; i < weekDaysArray.length; i++ ){
-                temp = values[weekDaysArray[i]];
-                for(var j = 0; j< temp.length; j++)
-                    allMasters.push([temp[j]])
-            }
-            allMasters = helpers.unique(allMasters)
-
-            var masters_keyboard = [];
-            for(var i = 0; i < allMasters.length; i++){
-                masters_keyboard[i] = [{
-                    text: allMasters[i],
-                    callback_data: 'masters&&'+allMasters[i]
-                }]
-            };
-            masters_keyboard[i] = [
-                {
-                    text: 'Заказ звонка',
-                    callback_data: 'request_a_call'
-                },
-                {
-                    text: 'Назад',
-                    callback_data: 'back_to_write_key'
-                }
-            ];
-            bot.sendMessage(msg.chat.id,'Выберите мастера:',{
-                reply_markup:{
-                    inline_keyboard: masters_keyboard
-                }
-            })
-
-        }, function (errorObject) {
-            console.log("The read failed: " + errorObject.code);
-        });
-        // console.log(allMasters)
+        var masters;
+        try {
+            crm.getMastersKey(function (err, masters_keyboard) {
+                bot.sendMessage(chatId, 'Выберите мастера:', {
+                    reply_markup: {
+                        inline_keyboard: masters_keyboard
+                    }
+                })
+            });
+        }catch(e){
+            bot.sendMessage(chatId, 'Что-то пошло не так 🙄',{})
+        }
     }
-
 })
 
 bot.on('callback_query', query => {
 
     const {chat, message_id, text} = query.message;
-
     // console.log(query.data);
 
-    if(query.data.split("&&")[0] == 'name_date') {//2.2
-        var name = query.data.split("&&")[1];
-        var date = query.data.split("&&")[2];
-
-        var reserved = [];
-        // var flag = true;
-        firebase.database().ref('queue/').on("value", function(snapshot) {
-            var values = snapshot.val();
-            for(var temp in values){
-                if((date == values[temp].date)&&(name == values[temp].master))
-                    reserved.push(values[temp].time)
-            }
-        }, function (errorObject) {
-            console.log("The read failed: " + errorObject.code);
-        });
-
-        var time_name_keyboard = helpers.getReservedTimeKey(reserved,date,name)
-        time_name_keyboard[time_name_keyboard.length] = [
-            {
-                text: 'Заказ звонка',
-                callback_data: 'request_a_call'
-            },
-            {
-                text: 'Назад',
-                callback_data: 'back_to_masters_keyboard'
-            }
-        ];
-
-        bot.deleteMessage(chat.id,message_id);
-        bot.sendMessage(chat.id,'Мастер '+name+' '+date  +' свободен в:  ',{
-            reply_markup:{
-                inline_keyboard: time_name_keyboard
-            }
-        })
-    }
-
-    if(query.data.split("&&")[0] == 'masters'){ //2.1
-
+    if(query.data.split("&&")[0] == 'm'){ //2.1
         var master = query.data.split("&&")[1];
-        firebase.database().ref('mastersWeekDays/'+master).on("value", function(snapshot) {
-            var values = snapshot.val();
-            if(values == null || values == 'null'){
-                bot.sendMessage(chat.id, 'Что-то пошло не так ', {});
-                return
-            }
-            var key = helpers.getSheduleByWeekDays(values,master);
-            key[key.length] = [
-                {
-                    text: 'Заказ звонка',
-                    callback_data: 'request_a_call'
-                },
-                {
-                    text: 'Назад',
-                    callback_data: 'back_to_masters_keyboard'
-                }]
-            // console.log(key);
+        var id = query.data.split("&&")[2];
+        crm.getDatesByMaster(id,master,function(err, key){
             bot.deleteMessage(chat.id,message_id);
             bot.sendMessage(chat.id,'Мастер '+ master +' работает :  ',{
                 reply_markup:{
                     inline_keyboard: key
                 }
             })
-
-        }, function (errorObject) {
-            console.log("The read failed: " + errorObject.code);
-        });
-
-
-    }
-
-    if(query.data.split("&&")[0] == 'time_name'){ //1.4
-
-        bot.deleteMessage(chat.id,message_id);
-        firebase.database().ref('queue/'+chat.id).update({
-            name: chat.first_name + ' ' +chat.last_name,
-            date: query.data.split("&&")[1],
-            time: query.data.split("&&")[3],
-            master: query.data.split("&&")[2]
         })
-        bot.sendMessage(chat.id, 'Вы записаны к  '
-            +query.data.split("&&")[2]+' '+query.data.split("&&")[1]+' в '+query.data.split("&&")[3]+';'
-            +'\nПоделитесь номером телефона чтоб мы могли с вами связаться', {
+    } //2.1 -> 2.2
+
+    if(query.data.split("&&")[0] == 'md') {//2.2
+        var name = query.data.split("&&")[2];
+        var date = query.data.split("&&")[1];
+        var id = query.data.split("&&")[3];
+        crm.getTimeByMasterAndDate(id,date,name,function(err, key) {
+            key.push([
+                { text: 'Заказ звонка',callback_data: 'request_a_call'},
+                { text: 'Назад',callback_data: 'back_to_masters_keyboard'} ]);
+            bot.deleteMessage(chat.id,message_id);
+            bot.sendMessage(chat.id,'Мастер '+name+' '+date.split('-')[2]+'.'+date.split('-')[1]+'.'+date.split('-')[0]+' свободен в:'  , {
+                reply_markup: {
+                    inline_keyboard: key
+                }
+            })
+        })
+    } //2.2 -> 2.3
+
+    if(query.data.split("&&")[0] == 'mdt'){ //(1)2.4
+        var client = chat.first_name;
+        var date = query.data.split("&&")[2];
+        var time = query.data.split("&&")[3];
+        var master = query.data.split("&&")[1];
+        var id = query.data.split("&&")[4];
+        bot.deleteMessage(chat.id,message_id);
+
+        var username = chat.username;
+        if (username == undefined)
+            username = '';
+        else{username='\n\nСвязаться с клиентом: @'+username;}
+
+        bot.sendMessage(-214510409,"Запись: \n"+client+' записан к  '+master+' '+date.split('-')[2]+'.'+date.split('-')[1]
+        +'.'+date.split('-')[0]+' в '+(time+'').substring(0, 2)+':'+(time+'').substring(2)+'.'+username,{})
+        bot.sendMessage(chat.id, client+', вы записаны к  '+master+' '+date.split('-')[2]+'.'+date.split('-')[1]
+            +'.'+date.split('-')[0]+' в '+(time+'').substring(0, 2)+':'+(time+'').substring(2)+'.'
+            +'\nПоделитесь номером телефона чтоб мы могли с вами связаться.', {
             reply_markup:{
                 keyboard:[
                     [{
@@ -302,90 +180,39 @@ bot.on('callback_query', query => {
         // bot.sendMessage(chat.id, 'Выберите действие 🤔', homeKey)
     }
 
-    if(query.data.slice(0,9) == 'date_name'){ //1.3
-        var date = query.data.split('&&')[2];
-        var name = query.data.split('&&')[1];
-        // console.log(date)
-        // console.log(name)
-        var reserved = [];
-
-        firebase.database().ref('queue/').on("value", function(snapshot) {
-            var values = snapshot.val();
-            for(var temp in values){
-                if((date == values[temp].date)&&(name == values[temp].master))
-                    reserved.push(values[temp].time)
-            }
-        }, function (errorObject) {
-            console.log("The read failed: " + errorObject.code);
-        });
-
-        var time_name_keyboard = helpers.getReservedTimeKey(reserved,date,name)
-        time_name_keyboard[time_name_keyboard.length] = [
-            {
-                text: 'Заказ звонка',
-                callback_data: 'request_a_call'
-            },
-            {
-                text: 'Назад',
-                callback_data: 'back_to_date_name_key'
-            }
-        ];
-
-        bot.deleteMessage(chat.id,message_id);
-        bot.sendMessage(chat.id,'Мастер '+name+' '+date  +' свободен в:  ',{
-            reply_markup:{
-                inline_keyboard: time_name_keyboard
-            }
+    if(query.data.split("&&")[0] == 'd') { //1.1 -> 2.2
+        var date = query.data.split('&&')[1];
+        crm.getMastersByDateKey(date, function (err, key) {
+            bot.deleteMessage(chat.id, message_id);
+            bot.sendMessage(chat.id, date.split('-')[2] + '.' + date.split('-')[1] + '.' + date.split('-')[0] + ' работают следующие мастера:', {
+                reply_markup: {
+                    inline_keyboard: key
+                }
+            })
         })
-
-        // console.log(reserved)
     }
 
-    if(query.data.slice(0,19) == 'choice_of_the_month'){ //1.2
-        var good_date = helpers.goodDate(+query.data.slice(-1));
-
-        var week_day = helpers.getWeekDay(+query.data.slice(-1));
-        firebase.database().ref('schedule/'+week_day).on("value", function(snapshot) {
-           const masters = snapshot.val();
-           if(masters == null || masters == 'null'){
-               bot.deleteMessage(chat.id,message_id);
-               bot.sendMessage(chat.id, good_date+' не работает ни один мастер.\nВыберите другую дату: ', choice_of_the_month_key);
-               return
-           }
-
-           var date_name_keyboard = [];
-           for(var i = 0; i < masters.length; i++){
-               date_name_keyboard[i] = [{
-                   text: masters[i],
-                   callback_data: 'date_name&&'+masters[i]+'&&'+good_date
-               }]
-           };
-           date_name_keyboard[i] = [
-               {
-                   text: 'Заказ звонка',
-                   callback_data: 'request_a_call'
-               },
-               {
-                   text: 'Назад',
-                   callback_data: 'back_to_date_name_key'
-               }
-           ];
-
-           bot.deleteMessage(chat.id,message_id);
-           bot.sendMessage(chat.id,good_date +' работают следующие мастера. Вы можете самостоятельно выбрать мастера.',{
-               reply_markup:{
-                   inline_keyboard: date_name_keyboard
-               }
-           })
-        }, function (errorObject) {
-            console.log("The read failed: " + errorObject.code);
-        });
+    if(query.data.split("&&")[0] == 'dm') { //1.2 -> 2.3
+        var date = query.data.split('&&')[1];
+        var name = query.data.split('&&')[2];
+        var id = query.data.split('&&')[3];
+        crm.getTimeByMasterAndDate(id,date,name,function(err, key) {
+            key.push([
+                { text: 'Заказ звонка',callback_data: 'request_a_call'},
+                { text: 'Назад',callback_data: 'back_to_date_name_key'} ]);
+            bot.deleteMessage(chat.id,message_id);
+            bot.sendMessage(chat.id,'Мастер '+name+' '+date.split('-')[2]+'.'+date.split('-')[1]+'.'+date.split('-')[0]+' свободен в:'  , {
+                reply_markup: {
+                    inline_keyboard: key
+                }
+            })
+        })
     }
 
     switch(query.data){ //1.1
         case 'back_to_date_name_key':
             bot.deleteMessage(chat.id,message_id)
-            bot.sendMessage(chat.id, 'Выберите дату: ', choice_of_the_month_key)
+            bot.sendMessage(chat.id, 'Выберите дату: ', helpers.choice_month_key(new Date()))
             break
         case 'back_to_write_key':
             bot.deleteMessage(chat.id,message_id)
@@ -405,46 +232,19 @@ bot.on('callback_query', query => {
             })
             break
         case 'back_to_masters_keyboard':
-            var allMasters  = [];
-            firebase.database().ref('schedule/').on("value", function(snapshot) {
-                var values = snapshot.val();
-                var temp;
-                // console.log(values)
-                var weekDaysArray = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
-                for(var i = 0; i < weekDaysArray.length; i++ ){
-                    temp = values[weekDaysArray[i]];
-                    for(var j = 0; j< temp.length; j++)
-                        allMasters.push([temp[j]])
-                }
-                allMasters = helpers.unique(allMasters)
+            var masters;
+            try {
+                crm.getMastersKey(function (err, masters_keyboard) {
+                    bot.sendMessage(chat.id, 'Выберите мастера:', {
+                        reply_markup: {
+                            inline_keyboard: masters_keyboard
+                        }
+                    })
+                });
+            }catch(e){
+                bot.sendMessage(chat.id, 'Что-то пошло не так 🙄',{})
+            }
 
-                var masters_keyboard = [];
-                for(var i = 0; i < allMasters.length; i++){
-                    masters_keyboard[i] = [{
-                        text: allMasters[i],
-                        callback_data: 'masters&&'+allMasters[i]
-                    }]
-                };
-                masters_keyboard[i] = [
-                    {
-                        text: 'Заказ звонка',
-                        callback_data: 'request_a_call'
-                    },
-                    {
-                        text: 'Назад',
-                        callback_data: 'back_to_write_key'
-                    }
-                ];
-                bot.deleteMessage(chat.id,message_id);
-                bot.sendMessage(chat.id,'Выберите мастера:',{
-                    reply_markup:{
-                        inline_keyboard: masters_keyboard
-                    }
-                })
-
-            }, function (errorObject) {
-                console.log("The read failed: " + errorObject.code);
-            });
             break
 
     };
