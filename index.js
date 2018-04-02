@@ -145,7 +145,7 @@ bot.on('callback_query', query => {
         if (username == undefined)
             username = 'tg://user?id=' + chat.id;
         else {
-            username = '\n\nСвязаться с клиентом: @' + username + ' tg://user?id=' + chat.id;
+            username = '\n\nСвязаться с клиентом: @' + username + ` <a href="tg://user?id=${chat.id}">${client}</a>`;
         }
 
         helpers.getUserData(chat.id, function (callback, error) {
@@ -155,7 +155,7 @@ bot.on('callback_query', query => {
                 crm.setAppointment(callback, date + ' ' + time + ':00', id, function (success) {
                     if (success) {
                         bot.sendMessage(helpers.applicationChatId, "Запись: \n" + client + ' записан к  ' + master + ' ' + date.split('-')[2] + '.' + date.split('-')[1]
-                            + '.' + date.split('-')[0] + ' в ' + time + '. ' + username, {})
+                            + '.' + date.split('-')[0] + ' в ' + time + '. ' + username, {parse_mode:"HTML"})
                         bot.sendMessage(chat.id, client + ', вы записаны к  ' + master + ' ' + date.split('-')[2] + '.' + date.split('-')[1]
                             + '.' + date.split('-')[0] + ' в ' + time + '.',homeKey)
                     } else {
