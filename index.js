@@ -155,7 +155,7 @@ bot.on('callback_query', query => {
                 crm.setAppointment(callback, date + ' ' + time + ':00', id, function (success) {
                     if (success) {
                         bot.sendMessage(helpers.applicationChatId, "Запись: \n" + client + ' записан к  ' + master + ' ' + date.split('-')[2] + '.' + date.split('-')[1]
-                            + '.' + date.split('-')[0] + ' в ' + time + '.' + username, {})
+                            + '.' + date.split('-')[0] + ' в ' + time + '. ' + username, {})
                         bot.sendMessage(chat.id, client + ', вы записаны к  ' + master + ' ' + date.split('-')[2] + '.' + date.split('-')[1]
                             + '.' + date.split('-')[0] + ' в ' + time + '.',homeKey)
                     } else {
