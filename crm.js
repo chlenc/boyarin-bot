@@ -367,7 +367,7 @@ module.exports = {
                             tempkey.push(kb.back('Отмена ❌', 'entry'));
                             tempkey.push(kb.toDay('➡️', service, next,master));
                             key.push(tempkey)
-                            bot.sendMessage(id, helpers.formatDate(date) + ' вы можете записаться на:', {reply_markup: {inline_keyboard: key}});
+                            bot.sendMessage(id, helpers.formatDate(date) + ' вы можете записаться на:\nдля выбора другой даты используйте кнопки "⬅️️" и "➡️️️"', {reply_markup: {inline_keyboard: key}});
                             return;
                         }
                     }
