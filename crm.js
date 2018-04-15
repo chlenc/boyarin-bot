@@ -315,7 +315,7 @@ module.exports = {
                             tomorrow = tomorrow.getFullYear() + '-' + ('0' + (tomorrow.getMonth() + 1)).slice(-2) + '-' + ('0' + (tomorrow.getDate() + 1)).slice(-2);
                             tempkey.push(kb.toDay('➡️', service, tomorrow,master));
                             key.push(tempkey)
-                            bot.sendMessage(id, helpers.formatDate(date) + ' вы можете записаться на:', {reply_markup: {inline_keyboard: key}})
+                            bot.sendMessage(id,  'Для выбора другой даты используйте кнопки "⬅️️" и "➡️️️"\n\n'+helpers.formatDate(date) + ' вы можете записаться на:', {reply_markup: {inline_keyboard: key}})
                         }
                     }
                 }
@@ -367,7 +367,7 @@ module.exports = {
                             tempkey.push(kb.back('Отмена ❌', 'entry'));
                             tempkey.push(kb.toDay('➡️', service, next,master));
                             key.push(tempkey)
-                            bot.sendMessage(id, helpers.formatDate(date) + ' вы можете записаться на:\nдля выбора другой даты используйте кнопки "⬅️️" и "➡️️️"', {reply_markup: {inline_keyboard: key}});
+                            bot.sendMessage(id, 'Для выбора другой даты используйте кнопки "⬅️️" и "➡️️️"\n\n'+helpers.formatDate(date) + ' вы можете записаться на:', {reply_markup: {inline_keyboard: key}});
                             return;
                         }
                     }
