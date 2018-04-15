@@ -113,7 +113,14 @@ module.exports = {
             }
         }
     },
-
+    formatDate(date) {
+        date = new Date(date);
+        return ('0' + date.getDate()).slice(-2) + '.' + ('0' + (date.getMonth() + 1)).slice(-2) + '.' + date.getFullYear();
+    },
+    conventDate(date) {
+        var arr = date.split(' ');
+        return arr[0] + ' ' + arr[1][0] + arr[1][1] + ':' + arr[1][2] + arr[1][3] + ':00'
+    },
     goodDate(num) {
         var date = new Date();
         if (num == undefined)
